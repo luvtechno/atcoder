@@ -6,7 +6,14 @@ o = nil
 a = a.chars.sort
 b = b.chars.sort.reverse
 
-(0..(a.size-1)).each do |i|
+len = 0
+if a.size > b.size
+  len = b.size - 1
+else
+  len = a.size - 1
+end
+
+(0..len).each do |i|
   if a[i] > b[i]
     o = false
     break
@@ -17,10 +24,10 @@ b = b.chars.sort.reverse
 end
 
 if o.nil?
-  if a.size == b.size
-    o = false
-  else
+  if a.size < b.size
     o = true
+  else
+    o = false
   end
 end
 
