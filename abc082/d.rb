@@ -35,16 +35,16 @@ end
 # pp x_steps
 # pp y_steps
 
-def f(steps, r, i)
-  return true if r == 0
-  return false if r < 0
+# def f(steps, r, i)
+#   return true if r == 0
+#   return false if r < 0
 
-  return false if i >= steps.size
+#   return false if i >= steps.size
 
-  return true if f(steps, r - steps[i], i + 1)
-  return true if f(steps, r, i + 1)
-  false
-end
+#   return true if f(steps, r - steps[i], i + 1)
+#   return true if f(steps, r, i + 1)
+#   false
+# end
 
 
 
