@@ -2,20 +2,21 @@ s = gets.chomp.chars
 s = s.map { |e| e == '1' }
 
 len = s.size
-ret = len.downto(1).each do |i|
-  sub_s = s[0..(i-1)]
+ret = len
 
-  z = sub_s[0]
-  if sub_s.all? { |e| e == z }
-    break i
-  end
+pos = []
+z = s[0]
 
-  ((len - i)..(i-1)).each do |j|
-    sub_s[j] = !sub_s[j]
-  end
-  z = sub_s[0]
-  if sub_s.all? { |e| e == z }
-    break i
+left_len = 0
+loop do
+  break if left_len == len
+  if s[left_len] != z
+    ret = [left_len, len - left_len].max
+    (left_len..(len-1)).each do |j|
+      s[j] = !s[j]
+    end
+  else
+    left_len += 1
   end
 end
 
