@@ -7,26 +7,19 @@ max = 2
 f = true
 
 a.each do |x|
-  if max - min < x
+  n_min = (min + x - 1) / x * x
+  n_max = max / x * x + (x - 1)
+
+  v_min = n_min / x * x
+  v_max = n_max / x * x
+
+  if v_min >= min && v_min <= max && v_max >= min && v_max <= max
+    min = n_min
+    max = n_max
+  else
     f = false
-    break
   end
-
-  m = (min + x - 1) / x * x
-  n = max / x * x + x - 1
-
-  if m > max
-    f = false
-    break
-  end
-
-  if n < min
-    f = false
-    break
-  end
-
-  min = m
-  max = n
+  # puts "#{x} #{min} #{max}"
 end
 
 if f
