@@ -1,21 +1,24 @@
 # require 'pp'
-@n = gets.chomp.to_i
-@a = gets.chomp.split(" ").map(&:to_i)
+n = gets.chomp.to_i
+a = gets.chomp.split(" ").map(&:to_i)
 
-@s = []
+s = []
 
-def f(i, sum)
-  if i == @n
-    @s << sum
-    return
+q = []
+q << [0, 0]
+
+loop do
+  break if q.empty?
+  i, sum = q.pop
+  if i == n
+    s << sum
+  else
+    q << [i + 1, sum]
+    q << [i + 1, sum + a[i]]
   end
-
-  f(i + 1, sum)
-  f(i + 1, sum + @a[i])
 end
 
-f(0, 0)
 
-@s.sort!
-# pp @s
-puts @s[2 ** (@n - 1)]
+s.sort!
+# pp s
+puts s[2 ** (n - 1)]
