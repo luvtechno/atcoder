@@ -50,7 +50,7 @@ K.times do
   bb = yl[target_i]
 
   cc = (xl[target_i - 1] + xl[target_i + 1]) / 2
-  dd = (xl[target_i - 1] + xl[target_i + 1]) / 2
+  dd = (yl[target_i - 1] + yl[target_i + 1]) / 2
 
   target_j = f[cc][dd]
   if target_j
