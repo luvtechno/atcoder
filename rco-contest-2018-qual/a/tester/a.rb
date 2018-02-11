@@ -64,7 +64,7 @@ def judge_all(fields, origin_list, k, seq)
   score_list = score_list[0..k-1]
   total_score = score_list.map { |score, map_id| score }.reduce(&:+)
   map_ids = score_list.map { |score, map_id| map_id }
-  STDERR.puts score_list
+  # STDERR.puts score_list
   [total_score, map_ids]
 end
 
@@ -89,6 +89,6 @@ seq_list.each do |seq|
   end
 end
 
-STDERR.puts "score: #{max_total_score}"
+# STDERR.puts "score: #{max_total_score}"
 puts max_map_ids.join(' ')
 puts max_seq
