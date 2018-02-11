@@ -32,13 +32,13 @@ end
 
 cl = Array.new(D, 0)
 c_total = 0
-(d-1).times do |i|
+(D-1).times do |i|
   cl[i] = (xl[i] - xl[i+1]).abs + (yl[i] - yl[i+1]).abs
   c_total += cl[i]
 end
 
 dl = Array.new(D, 0)
-(d-2).times do |i|
+(D-2).times do |i|
   dl[i] = cl[i] + cl[i+1]
 end
 
