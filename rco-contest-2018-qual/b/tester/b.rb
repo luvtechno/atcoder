@@ -14,6 +14,15 @@ def max_index(a)
   max_i
 end
 
+def top_n(a, n)
+  list = []
+  a.each_with_index do |e, i|
+    list << [e, i]
+  end
+  list.sort_by! { |e, i| -e }
+  list[0..(n-1)].map { |e, i| i }
+end
+
 
 H, W, D, K = gets.chomp.split(" ").map(&:to_i)
 # H W D K
@@ -42,38 +51,45 @@ dl = Array.new(D, 0)
   dl[i] = cl[i] + cl[i+1]
 end
 
-K.times do
-  aa = bb = cc = dd = 0
+b_size = 100
 
-  target_i = max_index(dl) + 1
-  aa = xl[target_i]
-  bb = yl[target_i]
+(K / b_size).times do
+  move_targets = top_n(dl, b_size).map { |i| i + 1 }
 
-  cc = (xl[target_i - 1] + xl[target_i + 1]) / 2
-  dd = (yl[target_i - 1] + yl[target_i + 1]) / 2
+  b_size.times do |z|
+    # target_i = max_index(dl) + 1
+    target_i = move_targets[z]
 
-  target_j = f[cc][dd]
-  if target_j
-    xl[target_j] = aa
-    yl[target_j] = bb
+    aa = bb = cc = dd = 0
+    aa = xl[target_i]
+    bb = yl[target_i]
 
-    cl[target_j - 1] = (xl[target_j - 1] - xl[target_j    ]).abs + (yl[target_j - 1] - yl[target_j    ]).abs if target_j - 1 >= 0
-    cl[target_j    ] = (xl[target_j    ] - xl[target_j + 1]).abs + (yl[target_j    ] - yl[target_j + 1]).abs if target_j + 1 < D
+    cc = (xl[target_i - 1] + xl[target_i + 1]) / 2
+    dd = (yl[target_i - 1] + yl[target_i + 1]) / 2
 
-    dl[target_j - 2] = cl[target_j - 2] + cl[target_j - 1] if target_j - 2 >= 0
-    dl[target_j - 1] = cl[target_j - 1] + cl[target_j    ]
-    dl[target_j    ] = cl[target_j    ] + cl[target_j + 1] if target_j + 1 < D - 1
+    target_j = f[cc][dd]
+    if target_j
+      xl[target_j] = aa
+      yl[target_j] = bb
+
+      cl[target_j - 1] = (xl[target_j - 1] - xl[target_j    ]).abs + (yl[target_j - 1] - yl[target_j    ]).abs if target_j - 1 >= 0
+      cl[target_j    ] = (xl[target_j    ] - xl[target_j + 1]).abs + (yl[target_j    ] - yl[target_j + 1]).abs if target_j + 1 < D
+
+      dl[target_j - 2] = cl[target_j - 2] + cl[target_j - 1] if target_j - 2 >= 0
+      dl[target_j - 1] = cl[target_j - 1] + cl[target_j    ]
+      dl[target_j    ] = cl[target_j    ] + cl[target_j + 1] if target_j + 1 < D - 1
+    end
+
+    xl[target_i] = cc
+    yl[target_i] = dd
+
+    cl[target_i - 1] = (xl[target_i - 1] - xl[target_i    ]).abs + (yl[target_i - 1] - yl[target_i    ]).abs if target_i - 1 >= 0
+    cl[target_i    ] = (xl[target_i    ] - xl[target_i + 1]).abs + (yl[target_i    ] - yl[target_i + 1]).abs if target_i + 1 < D
+
+    dl[target_i - 2] = cl[target_i - 2] + cl[target_i - 1] if target_i - 2 >= 0
+    dl[target_i - 1] = cl[target_i - 1] + cl[target_i    ]
+    dl[target_i    ] = cl[target_i    ] + cl[target_i + 1] if target_i + 1 < D - 1
+
+    puts "#{aa} #{bb} #{cc} #{dd}"
   end
-
-  xl[target_i] = cc
-  yl[target_i] = dd
-
-  cl[target_i - 1] = (xl[target_i - 1] - xl[target_i    ]).abs + (yl[target_i - 1] - yl[target_i    ]).abs if target_i - 1 >= 0
-  cl[target_i    ] = (xl[target_i    ] - xl[target_i + 1]).abs + (yl[target_i    ] - yl[target_i + 1]).abs if target_i + 1 < D
-
-  dl[target_i - 2] = cl[target_i - 2] + cl[target_i - 1] if target_i - 2 >= 0
-  dl[target_i - 1] = cl[target_i - 1] + cl[target_i    ]
-  dl[target_i    ] = cl[target_i    ] + cl[target_i + 1] if target_i + 1 < D - 1
-
-  puts "#{aa} #{bb} #{cc} #{dd}"
 end
