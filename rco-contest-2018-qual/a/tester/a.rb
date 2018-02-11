@@ -69,112 +69,6 @@ def judge_all(fields, origin_list, k, seq)
 end
 
 
-def guruguru1
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'U' * i
-      seq << 'R' * i
-    else
-      seq << 'D' * i
-      seq << 'L' * i
-    end
-  end
-  seq
-end
-def guruguru2
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'R' * i
-      seq << 'D' * i
-    else
-      seq << 'L' * i
-      seq << 'U' * i
-    end
-  end
-  seq
-end
-def guruguru3
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'D' * i
-      seq << 'L' * i
-    else
-      seq << 'U' * i
-      seq << 'R' * i
-    end
-  end
-  seq
-end
-def guruguru4
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'L' * i
-      seq << 'U' * i
-    else
-      seq << 'R' * i
-      seq << 'D' * i
-    end
-  end
-  seq
-end
-def guruguru1_r
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'U' * i
-      seq << 'L' * i
-    else
-      seq << 'D' * i
-      seq << 'R' * i
-    end
-  end
-  seq
-end
-def guruguru2_r
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'L' * i
-      seq << 'D' * i
-    else
-      seq << 'R' * i
-      seq << 'U' * i
-    end
-  end
-  seq
-end
-def guruguru3_r
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'D' * i
-      seq << 'R' * i
-    else
-      seq << 'U' * i
-      seq << 'L' * i
-    end
-  end
-  seq
-end
-def guruguru4_r
-  seq = ''
-  (1..49).each do |i|
-    if i.even?
-      seq << 'R' * i
-      seq << 'U' * i
-    else
-      seq << 'L' * i
-      seq << 'D' * i
-    end
-  end
-  seq
-end
-
-
 def guruguru_comb(r, rep)
   seq = ''
 
@@ -235,20 +129,20 @@ def guruguru_comb2(r, rep)
   seq[0..2499]
 end
 
-seq_list = []
+def snake(len, rep)
+  seq = ''
 
-# seq_list << 'U' * 50
-# seq_list << 'D' * 50
-# seq_list << 'L' * 50
-# seq_list << 'R' * 50
-# seq_list << guruguru1
-# seq_list << guruguru2
-# seq_list << guruguru3
-# seq_list << guruguru4
-# seq_list << guruguru1_r
-# seq_list << guruguru2_r
-# seq_list << guruguru3_r
-# seq_list << guruguru4_r
+  rep.times do |i|
+    seq << 'U' * len
+    seq << 'R'
+    seq << 'D' * len
+    seq << 'R'
+  end
+
+  seq[0..2499]
+end
+
+seq_list = []
 
 seq_list << guruguru_comb(15, 6)
 seq_list << guruguru_comb(20, 6)
@@ -259,10 +153,11 @@ seq_list << guruguru_comb2(3, 20)
 seq_list << guruguru_comb2(5, 20)
 seq_list << guruguru_comb2(7, 20)
 seq_list << guruguru_comb2(10, 20)
-# seq_list << guruguru_comb2(15, 6)
-# seq_list << guruguru_comb2(20, 6)
-# seq_list << guruguru_comb2(25, 4)
-# seq_list << guruguru_comb2(30, 4)
+
+seq_list << snake(25, 30)
+seq_list << snake(30, 30)
+seq_list << snake(35, 30)
+
 
 max_total_score = 0
 max_map_ids = []
