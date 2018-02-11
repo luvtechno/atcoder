@@ -68,10 +68,27 @@ def judge_all(fields, origin_list, k, seq)
   [total_score, map_ids]
 end
 
-seq = 'U' * t
+seq_list = []
 
-total_score, map_ids = judge_all(fields, origin_list, k, seq)
+seq_list << 'U' * t
+seq_list << 'D' * t
+seq_list << 'L' * t
+seq_list << 'R' * t
 
-STDERR.puts "score: #{total_score}"
-puts map_ids.join(' ')
-puts seq
+max_total_score = 0
+max_map_ids = []
+max_seq = ''
+
+seq_list.each do |seq|
+  total_score, map_ids = judge_all(fields, origin_list, k, seq)
+
+  if total_score > max_total_score
+    max_total_score = total_score
+    max_map_ids = map_ids
+    max_seq = seq
+  end
+end
+
+STDERR.puts "score: #{max_total_score}"
+puts max_map_ids.join(' ')
+puts max_seq
