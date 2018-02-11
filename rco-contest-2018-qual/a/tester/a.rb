@@ -69,7 +69,7 @@ def judge_all(fields, origin_list, k, seq)
 end
 
 
-def guruguru()
+def guruguru1
   seq = ''
   (1..49).each do |i|
     if i.even?
@@ -82,7 +82,45 @@ def guruguru()
   end
   seq
 end
-# STDERR.puts "guruguru #{guruguru.size}"
+def guruguru2
+  seq = ''
+  (1..49).each do |i|
+    if i.even?
+      seq << 'R' * i
+      seq << 'D' * i
+    else
+      seq << 'L' * i
+      seq << 'U' * i
+    end
+  end
+  seq
+end
+def guruguru3
+  seq = ''
+  (1..49).each do |i|
+    if i.even?
+      seq << 'D' * i
+      seq << 'L' * i
+    else
+      seq << 'U' * i
+      seq << 'R' * i
+    end
+  end
+  seq
+end
+def guruguru4
+  seq = ''
+  (1..49).each do |i|
+    if i.even?
+      seq << 'L' * i
+      seq << 'U' * i
+    else
+      seq << 'R' * i
+      seq << 'D' * i
+    end
+  end
+  seq
+end
 
 seq_list = []
 
@@ -90,7 +128,10 @@ seq_list << 'U' * 50
 seq_list << 'D' * 50
 seq_list << 'L' * 50
 seq_list << 'R' * 50
-seq_list << guruguru
+seq_list << guruguru1
+seq_list << guruguru2
+seq_list << guruguru3
+seq_list << guruguru4
 
 max_total_score = 0
 max_map_ids = []
