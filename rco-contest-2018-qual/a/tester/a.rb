@@ -203,6 +203,38 @@ def guruguru_comb(r, rep)
   seq[0..2499]
 end
 
+def guruguru_comb2(r, rep)
+  seq = ''
+
+  a = 1
+  b = r
+  rep.times do
+    (a..b).each do |i|
+      if i.even?
+        seq << 'R' * i
+        seq << 'U' * i
+      else
+        seq << 'L' * i
+        seq << 'D' * i
+      end
+    end
+
+    (a..b).each do |i|
+      if i.even?
+        seq << 'L' * i
+        seq << 'U' * i
+      else
+        seq << 'R' * i
+        seq << 'D' * i
+      end
+    end
+    a = b / 2
+    b = a + r
+  end
+
+  seq[0..2499]
+end
+
 seq_list = []
 
 # seq_list << 'U' * 50
@@ -217,10 +249,17 @@ seq_list = []
 # seq_list << guruguru2_r
 # seq_list << guruguru3_r
 # seq_list << guruguru4_r
+
 seq_list << guruguru_comb(15, 6)
 seq_list << guruguru_comb(20, 6)
-seq_list << guruguru_comb(25, 4)
-seq_list << guruguru_comb(30, 4)
+seq_list << guruguru_comb(25, 6)
+seq_list << guruguru_comb(30, 6)
+
+# seq_list << guruguru_comb2(10, 10)
+# seq_list << guruguru_comb2(15, 6)
+# seq_list << guruguru_comb2(20, 6)
+# seq_list << guruguru_comb2(25, 4)
+# seq_list << guruguru_comb2(30, 4)
 
 max_total_score = 0
 max_map_ids = []
