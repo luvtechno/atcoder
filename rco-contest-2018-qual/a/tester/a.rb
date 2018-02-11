@@ -158,6 +158,14 @@ seq_list << snake(25, 30)
 seq_list << snake(30, 30)
 seq_list << snake(35, 30)
 
+# seq_list << guruguru_comb2(5, 20)[0..999] + snake(30, 30)[0..999] + guruguru_comb2(5, 20)[0..499]
+# seq_list << guruguru_comb2(5, 20)[0..499] + snake(30, 30)[0..499] + guruguru_comb2(5, 20)[0..499] + snake(30, 30)[0..499] + guruguru_comb2(5, 20)[0..499]
+seq_list << ((guruguru_comb2(5, 20)[0..399] + snake(30, 30)[0..99]) * 5)[0..2499]
+seq_list << ((guruguru_comb2(5, 20)[0..499] + snake(30, 30)[0..99]) * 5)[0..2499]
+seq_list << ((guruguru_comb2(5, 20)[0..599] + snake(30, 30)[0..99]) * 5)[0..2499]
+
+# seq_list << snake(30, 30)[0..999] + guruguru_comb2(5, 20)[0..999] + snake(30, 30)[0..499]
+# seq_list << snake(30, 30)[0..499] + guruguru_comb2(5, 20)[0..499] + snake(30, 30)[0..499] + guruguru_comb2(5, 20)[0..499] + snake(30, 30)[0..499]
 
 max_total_score = 0
 max_map_ids = []
