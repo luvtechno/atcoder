@@ -189,7 +189,7 @@ def guruguru_comb(r, rep)
       end
     end
 
-    (1..20).each do |i|
+    (1..r).each do |i|
       if i.even?
         seq << 'L' * i
         seq << 'U' * i
