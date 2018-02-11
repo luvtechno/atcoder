@@ -121,6 +121,58 @@ def guruguru4
   end
   seq
 end
+def guruguru1_r
+  seq = ''
+  (1..49).each do |i|
+    if i.even?
+      seq << 'U' * i
+      seq << 'L' * i
+    else
+      seq << 'D' * i
+      seq << 'R' * i
+    end
+  end
+  seq
+end
+def guruguru2_r
+  seq = ''
+  (1..49).each do |i|
+    if i.even?
+      seq << 'L' * i
+      seq << 'D' * i
+    else
+      seq << 'R' * i
+      seq << 'U' * i
+    end
+  end
+  seq
+end
+def guruguru3_r
+  seq = ''
+  (1..49).each do |i|
+    if i.even?
+      seq << 'D' * i
+      seq << 'R' * i
+    else
+      seq << 'U' * i
+      seq << 'L' * i
+    end
+  end
+  seq
+end
+def guruguru4_r
+  seq = ''
+  (1..49).each do |i|
+    if i.even?
+      seq << 'R' * i
+      seq << 'U' * i
+    else
+      seq << 'L' * i
+      seq << 'D' * i
+    end
+  end
+  seq
+end
 
 seq_list = []
 
@@ -132,6 +184,10 @@ seq_list << guruguru1
 seq_list << guruguru2
 seq_list << guruguru3
 seq_list << guruguru4
+seq_list << guruguru1_r
+seq_list << guruguru2_r
+seq_list << guruguru3_r
+seq_list << guruguru4_r
 
 max_total_score = 0
 max_map_ids = []
