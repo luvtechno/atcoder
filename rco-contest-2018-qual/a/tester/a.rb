@@ -176,10 +176,10 @@ end
 
 seq_list = []
 
-seq_list << 'U' * 50
-seq_list << 'D' * 50
-seq_list << 'L' * 50
-seq_list << 'R' * 50
+# seq_list << 'U' * 50
+# seq_list << 'D' * 50
+# seq_list << 'L' * 50
+# seq_list << 'R' * 50
 seq_list << guruguru1
 seq_list << guruguru2
 seq_list << guruguru3
