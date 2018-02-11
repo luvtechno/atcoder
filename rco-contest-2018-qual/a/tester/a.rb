@@ -45,7 +45,7 @@ def judge(field, x, y, seq)
     case field[y][x]
     when 'o'
       score += 1
-      field[y][x] = ''
+      field[y][x] = ' '
     when 'x'
       return score
     end
