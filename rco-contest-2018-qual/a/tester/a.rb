@@ -33,13 +33,13 @@ def judge(field, x, y, seq)
     c = seq[i]
     case c
     when 'U'
-      y -= 1 unless field[x][y-1] == '#'
+      y -= 1 unless field[y-1][x] == '#'
     when 'D'
-      x += 1 unless field[x][y+1] == '#'
+      y += 1 unless field[y+1][x] == '#'
     when 'L'
-      x -= 1 unless field[x-1][y] == '#'
+      x -= 1 unless field[y][x-1] == '#'
     when 'R'
-      x -= 1 unless field[x+1][y] == '#'
+      x -= 1 unless field[y][x+1] == '#'
     end
 
     case field[x][y]
@@ -64,6 +64,7 @@ def judge_all(fields, origin_list, k, seq)
   score_list = score_list[0..k-1]
   total_score = score_list.map { |score, map_id| score }.reduce(&:+)
   map_ids = score_list.map { |score, map_id| map_id }
+  STDERR.puts score_list
   [total_score, map_ids]
 end
 
