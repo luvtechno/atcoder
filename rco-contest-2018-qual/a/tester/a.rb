@@ -228,7 +228,7 @@ def guruguru_comb2(r, rep)
         seq << 'D' * i
       end
     end
-    a = b / 2
+    a = b
     b = a + r
   end
 
@@ -255,7 +255,10 @@ seq_list << guruguru_comb(20, 6)
 seq_list << guruguru_comb(25, 6)
 seq_list << guruguru_comb(30, 6)
 
-# seq_list << guruguru_comb2(10, 10)
+seq_list << guruguru_comb2(3, 20)
+seq_list << guruguru_comb2(5, 20)
+seq_list << guruguru_comb2(7, 20)
+seq_list << guruguru_comb2(10, 20)
 # seq_list << guruguru_comb2(15, 6)
 # seq_list << guruguru_comb2(20, 6)
 # seq_list << guruguru_comb2(25, 4)
