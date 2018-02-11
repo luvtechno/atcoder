@@ -39,13 +39,13 @@ def judge(field, x, y, seq)
     when 'L'
       x -= 1 unless field[y][x-1] == '#'
     when 'R'
-      x -= 1 unless field[y][x+1] == '#'
+      x += 1 unless field[y][x+1] == '#'
     end
 
-    case field[x][y]
+    case field[y][x]
     when 'o'
       score += 1
-      field[x][y] = ''
+      field[y][x] = ''
     when 'x'
       return score
     end
