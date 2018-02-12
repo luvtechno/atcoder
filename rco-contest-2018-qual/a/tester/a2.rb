@@ -278,7 +278,8 @@ end
 
 
 def choose_fields(fields)
-  fields.sample(8)
+  # fields.sample(8)
+  fields[0..7]
 end
 
 def solve(fields)
@@ -316,6 +317,7 @@ def solve(fields)
       (q.size - queue_size_max).times { q.shift }
     end
   end
+  STDERR.puts "q.size:#{q.size} max_seq:#{max_seq.size} max:#{max_score} elapsed:#{elapsed}"
 
   max_seq
 end
