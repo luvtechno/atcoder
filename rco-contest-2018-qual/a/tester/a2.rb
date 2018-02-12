@@ -237,7 +237,7 @@ class State < Struct.new(:len, :seq, :score, :fields)
   def next_states
     list = []
     CH.each do |ch|
-      list << gen_next_state(ch) if ch != seq[-1]
+      list << gen_next_state(ch) #if ch != seq[-1]
     end
     list
   end
@@ -301,13 +301,11 @@ def solve(fields)
       max_seq = state.seq
     end
 
-    current_time = Time.now
-    elapsed = current_time - start_time
+    elapsed = Time.now - start_time
     # STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
     break if elapsed > 3.89
 
     next if state.prune?
-    # next if state.score < max_score * 8 / 10
 
     state.next_states.each do |next_state|
       q << next_state
