@@ -304,7 +304,7 @@ def solve(fields)
     current_time = Time.now
     elapsed = current_time - start_time
     # STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
-    break if elapsed > 3.9
+    break if elapsed > 3.89
 
     next if state.prune?
     # next if state.score < max_score * 8 / 10
