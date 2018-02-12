@@ -240,6 +240,10 @@ class State < Struct.new(:len, :seq, :score, :fields)
     CH.each do |ch|
       list << gen_next_state(ch) #if ch != seq[-1]
     end
+    # list << gen_next_state('U') if seq[-1] != 'D'
+    # list << gen_next_state('D') if seq[-1] != 'U'
+    # list << gen_next_state('L') if seq[-1] != 'R'
+    # list << gen_next_state('R') if seq[-1] != 'L'
     list
   end
 
@@ -281,8 +285,10 @@ end
 def choose_fields(fields)
   [
     fields.sample(8),
+    fields.sample(8),
     # fields[0..7],
     fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7],
+    fields.sort_by { |f| - f.c_c }[0..7],
   ]
 end
 
