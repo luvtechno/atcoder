@@ -189,7 +189,7 @@ H = 50
 W = 50
 T = 2500
 
-class Field < Struct.new(:id, :rows, :x, :y, :alive, :score)
+class Field < Struct.new(:id, :rows, :x, :y, :alive, :score, :c_c, :c_w, :c_t)
   def [](yy)
     rows[yy]
   end
@@ -199,7 +199,7 @@ class Field < Struct.new(:id, :rows, :x, :y, :alive, :score)
     rows.each do |row|
       new_rows << row.dup
     end
-    Field.new(id, new_rows, x, y, alive, score)
+    Field.new(id, new_rows, x, y, alive, score, c_c, c_w, c_t)
   end
 
   def move!(ch)
@@ -279,7 +279,8 @@ end
 
 def choose_fields(fields)
   # fields.sample(8)
-  fields[0..7]
+  # fields[0..7]
+  fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7]
 end
 
 def solve(fields)
@@ -292,7 +293,7 @@ def solve(fields)
   max_score = 0
   max_seq = ''
 
-  queue_size_max = 10 ** 3
+  queue_size_max = 500
 
   while(!q.empty?) do
     state = q.pop
@@ -325,16 +326,25 @@ fields = []
 n.times do |i|
   rows = []
   init_x = init_y = nil
+  c_c = c_w = c_t = 0
   h.times do |y|
     row = gets.chomp
     rows << row
-    x = row.index('@')
-    if x
-      init_x = x
-      init_y = y
+    row.chars.each_with_index do |ch, x|
+      case ch
+      when '@'
+        init_x = x
+        init_y = y
+      when 'o'
+        c_c += 1
+      when 'x'
+        c_t += 1
+      when '#'
+        c_w += 1
+      end
     end
   end
-  fields << Field.new(i, rows, init_x, init_y, true, 0)
+  fields << Field.new(i, rows, init_x, init_y, true, 0, c_c, c_w, c_t)
 end
 
 
