@@ -291,7 +291,7 @@ def solve(fields)
   max_score = 0
   max_seq = ''
 
-  queue_size_max = 10 ** 5
+  queue_size_max = 10 ** 4
 
   while(!q.empty?) do
     state = q.pop
