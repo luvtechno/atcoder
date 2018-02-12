@@ -261,7 +261,7 @@ class State < Struct.new(:len, :seq, :score, :fields)
   end
 
   def prune?
-    fields.any? { |f| !f.alive }
+    len >= 2500 || fields.any? { |f| !f.alive }
   end
 
   def dup
