@@ -238,17 +238,14 @@ class State < Struct.new(:len, :seq, :score, :fields)
   def next_states
     list = []
     CH.each do |ch|
-      CH.each do |ch2|
-        list << gen_next_state(ch, ch2) #if ch != seq[-1]
-      end
+      list << gen_next_state(ch) #if ch != seq[-1]
     end
     list
   end
 
-  def gen_next_state(ch, ch2)
+  def gen_next_state(ch)
     state = dup
     state.move!(ch)
-    state.move!(ch2)
     state
   end
 
@@ -282,19 +279,23 @@ end
 
 
 def choose_fields(fields)
-  # fields.sample(8)
-  # fields[0..7]
-  fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7]
+  [
+    fields.sample(8),
+    # fields[0..7],
+    fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7],
+  ]
 end
 
-def solve(fields, start_time)
+def solve(field_sets, start_time)
   q = PQueue.new
 
-  state = State.new(0, '', 0, fields)
-  q << state
+  field_sets.each do |fields|
+    state = State.new(0, '', 0, fields)
+    q << state
+  end
 
   max_score = 0
-  max_seq = ''
+  max_state = nil
 
   queue_size_max = 1000
 
@@ -302,12 +303,12 @@ def solve(fields, start_time)
     state = q.pop
     if state.score > max_score
       max_score = state.score
-      max_seq = state.seq
+      max_state = state
     end
 
     elapsed = Time.now - start_time
     # STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
-    break if elapsed > 3.91
+    break if elapsed > 3.90
 
     next if state.prune?
 
@@ -319,9 +320,9 @@ def solve(fields, start_time)
       (q.size - queue_size_max).times { q.shift }
     end
   end
-  STDERR.puts "q.size:#{q.size} max_seq:#{max_seq.size} max:#{max_score} elapsed:#{elapsed}"
+  STDERR.puts "q.size:#{q.size} max_seq:#{max_state.seq.size} max:#{max_score} elapsed:#{elapsed}"
 
-  max_seq
+  max_state
 end
 
 fields = []
@@ -352,8 +353,8 @@ end
 
 
 
-target_fields = choose_fields(fields)
-seq = solve(target_fields, start_time)
+target_field_sets = choose_fields(fields)
+state = solve(target_field_sets, start_time)
 
-puts target_fields.map(&:id).join(' ')
-puts seq
+puts state.fields.map(&:id).join(' ')
+puts state.seq[0..2499]
