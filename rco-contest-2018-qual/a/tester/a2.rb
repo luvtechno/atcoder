@@ -270,8 +270,11 @@ class State < Struct.new(:len, :seq, :score, :fields)
   def <=>(other)
     return 1 if score > other.score
     return -1 if score < other.score
-    return 1 if len > other.len
-    return -1 if len < other.len
+
+    # shorter is better
+    return -1 if len > other.len
+    return 1 if len < other.len
+
     0
   end
 end
