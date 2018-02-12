@@ -1,4 +1,4 @@
-require 'pp'
+# require 'pp'
 
 class PQueue
   def initialize(elements=nil, &block)
@@ -291,7 +291,7 @@ def solve(fields)
   max_score = 0
   max_seq = ''
 
-  queue_size_max = 10 ** 4
+  queue_size_max = 10 ** 3
 
   while(!q.empty?) do
     state = q.pop
@@ -302,7 +302,7 @@ def solve(fields)
 
     current_time = Time.now
     elapsed = current_time - start_time
-    STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
+    # STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
     break if elapsed > 3.9
 
     next if state.prune?
