@@ -1,4 +1,5 @@
 # require 'pp'
+start_time = Time.new
 
 class PQueue
   def initialize(elements=nil, &block)
@@ -237,14 +238,17 @@ class State < Struct.new(:len, :seq, :score, :fields)
   def next_states
     list = []
     CH.each do |ch|
-      list << gen_next_state(ch) #if ch != seq[-1]
+      CH.each do |ch2|
+        list << gen_next_state(ch, ch2) #if ch != seq[-1]
+      end
     end
     list
   end
 
-  def gen_next_state(ch)
+  def gen_next_state(ch, ch2)
     state = dup
     state.move!(ch)
+    state.move!(ch2)
     state
   end
 
@@ -268,7 +272,7 @@ class State < Struct.new(:len, :seq, :score, :fields)
   end
 
   def value
-    score - len * 2
+    score - len
   end
 
   def <=>(other)
@@ -283,8 +287,7 @@ def choose_fields(fields)
   fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7]
 end
 
-def solve(fields)
-  start_time = Time.new
+def solve(fields, start_time)
   q = PQueue.new
 
   state = State.new(0, '', 0, fields)
@@ -293,7 +296,7 @@ def solve(fields)
   max_score = 0
   max_seq = ''
 
-  queue_size_max = 500
+  queue_size_max = 1000
 
   while(!q.empty?) do
     state = q.pop
@@ -350,7 +353,7 @@ end
 
 
 target_fields = choose_fields(fields)
-seq = solve(target_fields)
+seq = solve(target_fields, start_time)
 
 puts target_fields.map(&:id).join(' ')
 puts seq
