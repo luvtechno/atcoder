@@ -1,6 +1,7 @@
 # require 'pp'
 start_time = Time.new
 time_limit = (ARGV[0] || 3.90).to_f
+GC.disable
 
 class PQueue
   def initialize(elements=nil, &block)
