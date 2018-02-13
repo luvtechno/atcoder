@@ -1,5 +1,7 @@
 # require 'pp'
 start_time = Time.new
+time_limit = (ARGV[0] || 3.90).to_f
+GC.disable
 
 class PQueue
   def initialize(elements=nil, &block)
@@ -116,7 +118,7 @@ private
   end
 end
 
-n, k, h, w, t = gets.chomp.split(" ").map(&:to_i)
+n, k, h, w, t = STDIN.gets.chomp.split(" ").map(&:to_i)
 N = 100
 K = 8
 H = 50
@@ -164,6 +166,9 @@ class Field < Struct.new(:id, :rows, :x, :y, :alive, :score, :c_c, :c_w, :c_t)
     new_field.move!(ch)
     new_field
   end
+
+  def find_seq_to_coin
+  end
 end
 
 class State < Struct.new(:len, :seq, :score, :fields)
@@ -177,7 +182,15 @@ class State < Struct.new(:len, :seq, :score, :fields)
     # list << gen_next_state('D') if seq[-1] != 'U'
     # list << gen_next_state('L') if seq[-1] != 'R'
     # list << gen_next_state('R') if seq[-1] != 'L'
-    list
+    # max = list.map(&:value).max
+    # list.select { |state| state.value >= max - 4 }
+    values = list.map(&:value)
+    return list if values.min < values.max
+
+
+    # ch_list = ''
+    # 5.times { ch_list << CH[rand(4)] }
+    # [gen_next_state(ch_list)]
   end
 
   def gen_next_state(ch)
@@ -225,7 +238,7 @@ def choose_fields(fields)
   ]
 end
 
-def solve(field_sets, start_time)
+def solve(field_sets, start_time, time_limit)
   q = PQueue.new
 
   field_sets.each do |fields|
@@ -235,9 +248,9 @@ def solve(field_sets, start_time)
 
   max_score = 0
   max_state = nil
+  elapsed = 0
 
   queue_size_max = 1000
-
   while(!q.empty?) do
     state = q.pop
     if state.score > max_score
@@ -245,9 +258,8 @@ def solve(field_sets, start_time)
       max_state = state
     end
 
-    elapsed = Time.now - start_time
-    # STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
-    break if elapsed > 3.90
+    STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
+    break if (elapsed = Time.now - start_time) > time_limit
 
     next if state.prune?
 
@@ -271,7 +283,7 @@ n.times do |i|
   init_x = init_y = nil
   c_c = c_w = c_t = 0
   h.times do |y|
-    row = gets.chomp
+    row = STDIN.gets.chomp
     rows << row
     row.chars.each_with_index do |ch, x|
       case ch
@@ -293,7 +305,7 @@ end
 
 
 target_field_sets = choose_fields(fields)
-state = solve(target_field_sets, start_time)
+state = solve(target_field_sets, start_time, time_limit)
 
 puts state.fields.map(&:id).join(' ')
 puts state.seq[0..2499]
