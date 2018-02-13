@@ -3,6 +3,7 @@ start_time = Time.new
 time_limit = (ARGV[0] || 3.90).to_f
 GC.disable
 
+require 'set'
 class PQueue
   def initialize(elements=nil, &block)
     @que = []; @cmp = block || lambda{ |a,b| a <=> b }
@@ -167,7 +168,31 @@ class Field < Struct.new(:id, :rows, :x, :y, :alive, :score, :c_c, :c_w, :c_t)
     new_field
   end
 
+  CH = ['U', 'D', 'L', 'R'].freeze
   def find_seq_to_coin
+    set = Set.new
+    q = Queue.new
+    q << [self.dup, '']
+
+    found_seq = ''
+    while(!q.empty?) do
+      field, seq = q.pop
+      if field.score > self.score
+        found_seq = seq
+        break
+      end
+
+      next unless field.alive
+
+      pos = [field.x, field.y]
+      next if set.include?(pos)
+      set << pos
+
+      CH.each do |ch|
+        q << [field.move(ch), seq + ch]
+      end
+    end
+    found_seq
   end
 end
 
@@ -178,24 +203,39 @@ class State < Struct.new(:len, :seq, :score, :fields)
     CH.each do |ch|
       list << gen_next_state(ch) #if ch != seq[-1]
     end
-    # list << gen_next_state('U') if seq[-1] != 'D'
-    # list << gen_next_state('D') if seq[-1] != 'U'
-    # list << gen_next_state('L') if seq[-1] != 'R'
-    # list << gen_next_state('R') if seq[-1] != 'L'
-    # max = list.map(&:value).max
-    # list.select { |state| state.value >= max - 4 }
-    values = list.map(&:value)
-    return list if values.min < values.max
+    list
 
+    # scores = list.map(&:score)
+    # scores_max = scores.max
+    # return list if scores.max > self.score
 
-    # ch_list = ''
-    # 5.times { ch_list << CH[rand(4)] }
-    # [gen_next_state(ch_list)]
+    # list2 = []
+    # seq_list = fields.map { |field| field.find_seq_to_coin.chars }
+    # seq_list.each do |seq|
+    #   list2 << gen_next_state(*seq)
+    # end
+    # scores2 = list2.map(&:score)
+    # scores2_max = scores.max
+    # STDERR.puts "find_seq_to_coin: #{scores_max} -> #{scores2_max}"
+    # if scores2_max > scores_max
+    #   list2.select { |state| state.score >= scores_max }
+    # else
+    #   list
+    # end
+
+    # list2 = []
+    # seq_list = fields.map { |field| field.find_seq_to_coin.chars }
+    # seq_list.each do |seq|
+    #   list2 << gen_next_state(*seq)
+    # end
+    # list2
   end
 
-  def gen_next_state(ch)
+  def gen_next_state(*ch_list)
     state = dup
-    state.move!(ch)
+    ch_list.each do |ch|
+      state.move!(ch)
+    end
     state
   end
 
