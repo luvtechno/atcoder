@@ -271,10 +271,10 @@ end
 def choose_fields(fields)
   [
     fields.sample(8),
-    fields.sample(8),
+    # fields.sample(8),
     # fields[0..7],
-    fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7],
-    fields.sort_by { |f| - f.c_c }[0..7],
+    # fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7],
+    # fields.sort_by { |f| - f.c_c }[0..7],
   ]
 end
 
@@ -291,6 +291,10 @@ def solve(field_sets, start_time, time_limit)
   elapsed = 0
 
   queue_size_max = 1000
+
+  prev_max_score = 0
+  max_unchanged_count = 0
+  stop_count = 100
   while(!q.empty?) do
     state = q.pop
     if state.score > max_score
@@ -298,7 +302,17 @@ def solve(field_sets, start_time, time_limit)
       max_state = state
     end
 
-    STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed}"
+    if max_score == prev_max_score
+      max_unchanged_count += 1
+      if max_unchanged_count >= stop_count
+        break
+      end
+    else
+      max_unchanged_count = 0
+    end
+    prev_max_score = max_score
+
+    # STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed} unchanged:#{max_unchanged_count}"
     break if (elapsed = Time.now - start_time) > time_limit
 
     next if state.prune?
@@ -343,9 +357,17 @@ n.times do |i|
 end
 
 
+max_score = 0
+max_state = nil
+loop do
+  break if (elapsed = Time.now - start_time) > time_limit
+  target_field_sets = choose_fields(fields)
+  state = solve(target_field_sets, start_time, time_limit)
+  if state.score > max_score
+    max_score = state.score
+    max_state = state
+  end
+end
 
-target_field_sets = choose_fields(fields)
-state = solve(target_field_sets, start_time, time_limit)
-
-puts state.fields.map(&:id).join(' ')
-puts state.seq[0..2499]
+puts max_state.fields.map(&:id).join(' ')
+puts max_state.seq[0..2499]
