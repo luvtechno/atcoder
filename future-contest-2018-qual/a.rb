@@ -9,22 +9,28 @@ N = 100
 class F < Struct.new(:mat, :score)
   def initialize(mat)
     s = 0
-    mat.each { |row| row.each { |e| s += e.abs } }
+    max_x = 0; max_y = 0; max = 0
+    mat.each_with_index do |row, y|
+      row.each_with_index do |e, x|
+        s += e.abs
+      end
+    end
     super(mat, s)
   end
 
   def sub(x, y, h)
-    original_score = self.score
+    old_score = self.score
     ([x-h+1, 0].max..[x+h-1, N-1].min).each do |i|
       ([y-h+1, 0].max..[y+h-1, N-1].min).each do |j|
         d = [h - (x - i).abs - (y - j).abs, 0].max
-        original = self.mat[j][i]
-        self.mat[j][i] = original - d
-        score_diff = original.abs - self.mat[j][i].abs
+        old_value = self.mat[j][i]
+        new_value = old_value - d
+        self.mat[j][i] = new_value
+        score_diff = old_value.abs - new_value.abs
         self.score -= score_diff
       end
     end
-    original_score - self.score
+    old_score - self.score
   end
 
   def dup
@@ -58,17 +64,6 @@ class Seq < Struct.new(:arr, :target)
     target.score
   end
 
-  def gen_rand!(steps = 1000)
-    steps.times do
-      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
-
-      x = rand(N)
-      y = rand(N)
-      h = 1 + rand(N - 1)
-      add!(x, y, h)
-    end
-  end
-
   def gen_rand2!(steps = 1000)
     (steps - 250).times do
       break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
@@ -78,6 +73,10 @@ class Seq < Struct.new(:arr, :target)
       h = 1 + rand(N - 1)
       add!(x, y, h)
     end
+  end
+
+  def greedy
+
   end
 
   def print
@@ -102,7 +101,7 @@ def solve(target)
     break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
 
     seq = base_seq.dup
-    seq.gen_rand2!(STEPS)
+    # seq.gen_rand2!(STEPS)
 
     if seq.score < best_score
       best_score = seq.score
