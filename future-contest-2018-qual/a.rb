@@ -68,11 +68,11 @@ class Seq < Struct.new(:arr, :target)
     seq
   end
 
-  def add!(x, y, h)
+  def add!(x, y, h, score_target)
     raise if h <= 0 || h > N
     next_target = target.dup
     score_diff = next_target.sub(x, y, h)
-    if score_diff > 0
+    if score_diff >= score_target
       self.target = next_target
       arr << [x, y, h]
     end
@@ -86,7 +86,7 @@ class Seq < Struct.new(:arr, :target)
     250.times do
       break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
       x = rand(N); y = rand(N); h = N
-      add!(x, y, h)
+      add!(x, y, h, 1)
     end
 
     prev_score = score
@@ -98,7 +98,13 @@ class Seq < Struct.new(:arr, :target)
       h, x, y = target.max
       h2 = [h, h_cap].min
       if h > 0
-        add!(x, y, h2)
+        a = [0]
+        (1..h2).each do |b|
+          a[b] = a[b-1] + (b * 2 - 1)
+        end
+        score_target = a.reduce(&:+) * 2 - a[-1]
+
+        add!(x, y, h2, score_target / 2)
       end
 
       STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}, h2:#{h2} h:#{h}, x:#{x}, y:#{y}"
