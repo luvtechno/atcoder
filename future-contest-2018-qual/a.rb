@@ -97,7 +97,7 @@ class Seq < Struct.new(:arr, :target)
 
     SCORE_TARGET_MEMO[h] = score_target
     score_target
-end
+  end
 
   def greedy
     250.times do
