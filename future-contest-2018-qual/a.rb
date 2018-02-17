@@ -44,7 +44,7 @@ class F < Struct.new(:mat, :score)
         self.mat[j][i] = new_value
         score_diff = old_value.abs - new_value.abs
         self.score -= score_diff
-        penalty += d if new_value < 0 #&& old_value >= 0
+        penalty += new_value if new_value < 0
       end
     end
 
@@ -57,7 +57,7 @@ class F < Struct.new(:mat, :score)
         self.mat[j][i] = new_value
         score_diff = old_value.abs - new_value.abs
         self.score -= score_diff
-        penalty += d if new_value < 0 #&& old_value >= 0
+        penalty += new_value if new_value < 0
       end
     end
 
@@ -70,7 +70,7 @@ class F < Struct.new(:mat, :score)
         self.mat[j][i] = new_value
         score_diff = old_value.abs - new_value.abs
         self.score -= score_diff
-        penalty += d if new_value < 0 #&& old_value >= 0
+        penalty += new_value if new_value < 0
       end
     end
 
@@ -83,7 +83,7 @@ class F < Struct.new(:mat, :score)
         self.mat[j][i] = new_value
         score_diff = old_value.abs - new_value.abs
         self.score -= score_diff
-        penalty += d if new_value < 0 #&& old_value >= 0
+        penalty += new_value if new_value < 0
       end
     end
 
