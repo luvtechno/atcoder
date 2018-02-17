@@ -73,7 +73,7 @@ class Seq < Struct.new(:arr, :target)
   end
 
   def add!(x, y, h, score_target)
-    raise if h <= 0 || h > N
+    # raise if h <= 0 || h > N
     next_target = target.dup
     score_diff = next_target.sub(x, y, h)
     if score_diff >= score_target
