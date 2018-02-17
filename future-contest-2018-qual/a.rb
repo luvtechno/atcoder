@@ -21,6 +21,7 @@ class F < Struct.new(:mat, :score)
 
   def sub(x, y, h)
     old_score = self.score
+    penalty = 0
     ([x-h+1, 0].max..[x+h-1, N-1].min).each do |i|
       ([y-h+1, 0].max..[y+h-1, N-1].min).each do |j|
         d = h - (x - i).abs - (y - j).abs
@@ -30,9 +31,10 @@ class F < Struct.new(:mat, :score)
         self.mat[j][i] = new_value
         score_diff = old_value.abs - new_value.abs
         self.score -= score_diff
+        penalty += d if new_value < 0 && old_value >= 0
       end
     end
-    old_score - self.score
+    old_score - self.score - penalty * 3
   end
 
   def max
