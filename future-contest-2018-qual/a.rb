@@ -19,7 +19,7 @@ class F < Struct.new(:mat)
   end
 end
 
-class Seq < Struct.new(:arr)
+class Seq < Struct.new(:arr, :target)
   def gen_rand!
     1000.times do
       x = rand(N)
@@ -35,10 +35,23 @@ class Seq < Struct.new(:arr)
       puts "#{x} #{y} #{h}"
     end
   end
+
+  def calc_score
+    a = Array.new(N) { Array.new(N, 0) }
+    f = F.new(a)
+    arr.each { |x, y, h| f.add(x, y, h) }
+
+    score = 200000000
+    N.times do |j|
+      N.times do |i|
+        score -= (target[j][i] - f.mat[j][i]).abs
+      end
+    end
+  end
 end
 
 def solve(target, start_time, time_limit)
-  seq = Seq.new([])
+  seq = Seq.new([], target)
   seq.gen_rand!
 
   # break if (elapsed = Time.now - start_time) > time_limit
