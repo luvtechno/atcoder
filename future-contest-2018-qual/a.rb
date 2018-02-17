@@ -19,7 +19,7 @@ class F < Struct.new(:mat)
   end
 end
 
-class Seq < Struct.new(:arr, :target)
+class Seq < Struct.new(:arr, :score, :target)
   def gen_rand!
     1000.times do
       x = rand(N)
@@ -41,27 +41,41 @@ class Seq < Struct.new(:arr, :target)
     f = F.new(a)
     arr.each { |x, y, h| f.add(x, y, h) }
 
-    score = 200000000
+    self.score = 200000000
     N.times do |j|
       N.times do |i|
-        score -= (target[j][i] - f.mat[j][i]).abs
+        # puts "#{j} #{i}: #{target.mat[j][i]} #{f.mat[j][i]}"
+        self.score -= (target.mat[j][i] - f.mat[j][i]).abs
       end
     end
   end
 end
 
 def solve(target, start_time, time_limit)
-  seq = Seq.new([], target)
-  seq.gen_rand!
+  best_score = 0
+  best_seq = nil
 
-  # break if (elapsed = Time.now - start_time) > time_limit
+  loop do
+    break if (elapsed = Time.now - start_time) > time_limit
 
+    seq = Seq.new([], 0, target)
+    seq.gen_rand!
+    seq.calc_score
+
+    if seq.score > best_score
+      best_score = seq.score
+      best_seq = seq
+    end
+  end
+
+  best_seq
 end
 
-target = []
+target_mat = []
 N.times do
-  target << STDIN.gets.chomp.split(" ").map(&:to_i)
+  target_mat << STDIN.gets.chomp.split(" ").map(&:to_i)
 end
+target = F.new(target_mat)
 
 seq = solve(target, start_time, time_limit)
 seq.print
