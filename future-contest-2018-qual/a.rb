@@ -1,7 +1,7 @@
 # require 'pp'
 # require 'rblineprof'
 START_TIME = Time.new
-TIME_LIMIT = (ARGV[0] || 5.90).to_f
+TIME_LIMIT = (ARGV[0] || 5.95).to_f
 # GC.disable
 
 N = 100
