@@ -22,7 +22,7 @@ f = F.new(a)
 N.times do
   x = rand(N)
   y = rand(N)
-  h = rand(N)
+  h = 1 + rand(N - 1)
 
   f.add(x, y, h)
 end
