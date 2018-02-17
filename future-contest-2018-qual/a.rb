@@ -6,13 +6,27 @@ STEPS = (ARGV[1] || 450).to_i
 
 N = 100
 
-class F < Struct.new(:mat)
-  def add(x, y, h)
+class F < Struct.new(:mat, :sum)
+  def initialize(mat)
+    s = 0
+    mat.each { |row| row.each { |e| s += e } }
+    super(mat, s)
+  end
+
+  def sub(x, y, h)
     ([x-h+1, 0].max..[x+h-1, N-1].min).each do |i|
       ([y-h+1, 0].max..[y+h-1, N-1].min).each do |j|
-        mat[j][i] += [h - (x - i).abs - (y - j).abs, 0].max
+        d = [h - (x - i).abs - (y - j).abs, 0].max
+        self.mat[j][i] -= d
+        self.sum -= d
       end
     end
+  end
+
+  def dup
+    mat_dup = []
+    mat.each { |row| mat_dup << row.dup }
+    f = F.new(mat_dup)
   end
 
   def print
@@ -20,29 +34,44 @@ class F < Struct.new(:mat)
   end
 end
 
-class Seq < Struct.new(:arr, :score, :target)
+class Seq < Struct.new(:arr, :target)
+  def add!(x, y, h)
+    arr << [x, y, h]
+    target.sub(x, y, h)
+  end
+
+  def score
+    target.sum.abs
+  end
+
   def gen_rand!(steps = 1000)
     steps.times do
+      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
+
       x = rand(N)
       y = rand(N)
       h = 1 + rand(N - 1)
-      arr << [x, y, h]
+      add!(x, y, h)
     end
   end
 
   def gen_rand2!(steps = 1000)
     250.times do
+      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
+
       x = rand(N)
       y = rand(N)
       h = N
-      arr << [x, y, h]
+      add!(x, y, h)
     end
 
     (steps - 250).times do
+      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
+
       x = rand(N)
       y = rand(N)
       h = 1 + rand(N - 1)
-      arr << [x, y, h]
+      add!(x, y, h)
     end
   end
 
@@ -52,38 +81,20 @@ class Seq < Struct.new(:arr, :score, :target)
       puts "#{x} #{y} #{h}"
     end
   end
-
-  def calc_score
-    a = Array.new(N) { Array.new(N, 0) }
-    f = F.new(a)
-    arr.each do |x, y, h|
-      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
-      f.add(x, y, h)
-    end
-
-    self.score = 200000000
-    N.times do |j|
-      N.times do |i|
-        # puts "#{j} #{i}: #{target.mat[j][i]} #{f.mat[j][i]}"
-        self.score -= (target.mat[j][i] - f.mat[j][i]).abs
-      end
-    end
-  end
 end
 
 def solve(target)
-  best_score = 0
+  best_score = 200000000
   best_seq = nil
 
   loop do
     break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
     STDERR.puts "t:#{elapsed} score:#{best_score}"
 
-    seq = Seq.new([], 0, target)
+    seq = Seq.new([], target)
     seq.gen_rand2!(STEPS)
-    seq.calc_score
 
-    if seq.score > best_score
+    if seq.score < best_score
       best_score = seq.score
       best_seq = seq
     end
