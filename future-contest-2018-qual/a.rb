@@ -84,21 +84,28 @@ class Seq < Struct.new(:arr, :target)
 
   def greedy(steps = 1000)
     250.times do
+      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
       x = rand(N); y = rand(N); h = N
       add!(x, y, h)
     end
 
     prev_score = score
+    h_cap = N
     steps.times do |i|
       break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
 
       h, x, y = target.max
       if h > 0
-        add!(x, y, [h, 100].min)
+        add!(x, y, [h, h_cap].min)
       end
 
-      # STDERR.puts "t:#{elapsed} i:#{i} score:#{score}"
-      break if prev_score == score
+      STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}"
+      if prev_score == score
+        h_cap = (h_cap + 1) / 2
+        break if h_cap <= 0
+      else
+        h_cap = N
+      end
       prev_score = score
     end
   end
@@ -128,7 +135,7 @@ def solve(target)
     break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
     STDERR.puts "t:#{elapsed} best:#{best_score} score:#{seq.score}"
   end
-  STDERR.puts "t:#{elapsed} best:#{best_score}"
+  STDERR.puts "t:#{elapsed} best:#{best_score} best_step:#{best_seq.arr.size}"
 
   best_seq
 end
