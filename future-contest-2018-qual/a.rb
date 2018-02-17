@@ -23,7 +23,8 @@ class F < Struct.new(:mat, :score)
     old_score = self.score
     ([x-h+1, 0].max..[x+h-1, N-1].min).each do |i|
       ([y-h+1, 0].max..[y+h-1, N-1].min).each do |j|
-        d = [h - (x - i).abs - (y - j).abs, 0].max
+        d = h - (x - i).abs - (y - j).abs
+        next if d <= 0
         old_value = self.mat[j][i]
         new_value = old_value - d
         self.mat[j][i] = new_value
@@ -83,6 +84,21 @@ class Seq < Struct.new(:arr, :target)
     target.score
   end
 
+  SCORE_TARGET_MEMO = {}
+  def score_target(h)
+    memo = SCORE_TARGET_MEMO[h]
+    return memo if memo
+
+    a = [0]
+    (1..h).each do |b|
+      a[b] = a[b-1] + (b * 2 - 1)
+    end
+    score_target = a.reduce(&:+) * 2 - a[-1]
+
+    SCORE_TARGET_MEMO[h] = score_target
+    score_target
+end
+
   def greedy
     250.times do
       break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
@@ -99,13 +115,8 @@ class Seq < Struct.new(:arr, :target)
       h, x, y = target.max
       h2 = [h, h_cap].min
       if h > 0
-        a = [0]
-        (1..h2).each do |b|
-          a[b] = a[b-1] + (b * 2 - 1)
-        end
-        score_target = a.reduce(&:+) * 2 - a[-1]
-
-        add!(x, y, h2, score_target / 2)
+        s_target = score_target(h2)
+        add!(x, y, h2, s_target / 2)
       end
 
       # STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}, h2:#{h2} h:#{h}, x:#{x}, y:#{y}"
