@@ -1,7 +1,7 @@
 # require 'pp'
 START_TIME = Time.new
-TIME_LIMIT = (ARGV[0] || 5.6).to_f
-STEPS = (ARGV[1] || 450).to_i
+TIME_LIMIT = (ARGV[0] || 5.8).to_f
+STEPS = (ARGV[1] || 500).to_i
 # GC.disable
 
 N = 100
@@ -33,6 +33,19 @@ class F < Struct.new(:mat, :score)
     old_score - self.score
   end
 
+  def max
+    max = mat[0][0]
+    max_x = max_y = 0
+    mat.each_with_index do |row, y|
+      row.each_with_index do |e, x|
+        if max < e
+          max = e; max_x = x; max_y = y
+        end
+      end
+    end
+    [max, max_x, max_y]
+  end
+
   def dup
     mat_dup = []
     mat.each { |row| mat_dup << row.dup }
@@ -56,6 +69,7 @@ class Seq < Struct.new(:arr, :target)
   end
 
   def add!(x, y, h)
+    raise if h <= 0 || h > N
     arr << [x, y, h]
     target.sub(x, y, h)
   end
@@ -75,8 +89,17 @@ class Seq < Struct.new(:arr, :target)
     end
   end
 
-  def greedy
+  def greedy(steps = 1000)
+    (steps - 250).times do
+      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
 
+      h, x, y = target.max
+      if h > 0
+        add!(x, y, [h, 100].min)
+      end
+
+      STDERR.puts "t:#{elapsed} score:#{score}"
+    end
   end
 
   def print
@@ -102,6 +125,7 @@ def solve(target)
 
     seq = base_seq.dup
     # seq.gen_rand2!(STEPS)
+    seq.greedy(STEPS)
 
     if seq.score < best_score
       best_score = seq.score
@@ -109,6 +133,7 @@ def solve(target)
     end
 
     STDERR.puts "t:#{elapsed} best:#{best_score} score:#{seq.score}"
+    break
   end
 
   best_seq
