@@ -6,15 +6,16 @@ TIME_LIMIT = (ARGV[0] || 5.90).to_f
 N = 100
 
 class F < Struct.new(:mat, :score)
-  def initialize(mat)
-    s = 0
-    max_x = 0; max_y = 0; max = 0
-    mat.each_with_index do |row, y|
-      row.each_with_index do |e, x|
-        s += e.abs
+  def initialize(mat, score)
+    if score.nil?
+      score = 0
+      mat.each do |row|
+        row.each do |e|
+          score += e.abs
+        end
       end
     end
-    super(mat, s)
+    super(mat, score)
   end
 
   def sub(x, y, h)
@@ -48,7 +49,7 @@ class F < Struct.new(:mat, :score)
   def dup
     mat_dup = []
     mat.each { |row| mat_dup << row.dup }
-    f = F.new(mat_dup)
+    f = F.new(mat_dup, self.score)
   end
 
   def print
