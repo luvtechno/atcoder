@@ -1,6 +1,6 @@
 # require 'pp'
 START_TIME = Time.new
-TIME_LIMIT = (ARGV[0] || 5.85).to_f
+TIME_LIMIT = (ARGV[0] || 5.90).to_f
 # GC.disable
 
 N = 100
@@ -111,7 +111,7 @@ class Seq < Struct.new(:arr, :target)
         h_cap = (h2 + 1) / 2
         break if h_cap <= 0
       else
-        h_cap = N
+        h_cap = [[h, 100].min, 1].max
       end
       prev_score = score
       i += 1
