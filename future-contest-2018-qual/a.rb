@@ -80,6 +80,7 @@ class Seq < Struct.new(:arr, :target)
       self.target = next_target
       arr << [x, y, h]
     end
+    score_diff
   end
 
   def score
@@ -117,8 +118,8 @@ class Seq < Struct.new(:arr, :target)
       h, x, y = target.max
       h2 = [h, h_cap].min
       if h > 0
-        s_target = score_target(h2)
-        add!(x, y, h2, s_target / 2)
+        s_target = score_target(h2) / 2
+        add!(x, y, h2, s_target)
       end
 
       # STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}, h2:#{h2} h:#{h}, x:#{x}, y:#{y}"
