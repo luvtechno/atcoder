@@ -1,7 +1,6 @@
 # require 'pp'
 START_TIME = Time.new
-TIME_LIMIT = (ARGV[0] || 5.8).to_f
-STEPS = (ARGV[1] || 500).to_i
+TIME_LIMIT = (ARGV[0] || 5.85).to_f
 # GC.disable
 
 N = 100
@@ -82,7 +81,7 @@ class Seq < Struct.new(:arr, :target)
     target.score
   end
 
-  def greedy(steps = 1000)
+  def greedy
     250.times do
       break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
       x = rand(N); y = rand(N); h = N
@@ -135,7 +134,7 @@ def solve(target)
 
   loop do
     seq = Seq.new(target)
-    seq.greedy(STEPS)
+    seq.greedy
 
     if seq.score < best_score
       best_score = seq.score
