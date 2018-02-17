@@ -70,27 +70,26 @@ class Seq < Struct.new(:arr, :target)
 
   def add!(x, y, h)
     raise if h <= 0 || h > N
-    arr << [x, y, h]
-    target.sub(x, y, h)
+    next_target = target.dup
+    score_diff = next_target.sub(x, y, h)
+    if score_diff > 0
+      self.target = next_target
+      arr << [x, y, h]
+    end
   end
 
   def score
     target.score
   end
 
-  def gen_rand2!(steps = 1000)
-    (steps - 250).times do
-      break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
-
-      x = rand(N)
-      y = rand(N)
-      h = 1 + rand(N - 1)
+  def greedy(steps = 1000)
+    250.times do
+      x = rand(N); y = rand(N); h = N
       add!(x, y, h)
     end
-  end
 
-  def greedy(steps = 1000)
-    (steps - 250).times do
+    prev_score = score
+    steps.times do |i|
       break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
 
       h, x, y = target.max
@@ -98,7 +97,9 @@ class Seq < Struct.new(:arr, :target)
         add!(x, y, [h, 100].min)
       end
 
-      STDERR.puts "t:#{elapsed} score:#{score}"
+      # STDERR.puts "t:#{elapsed} i:#{i} score:#{score}"
+      break if prev_score == score
+      prev_score = score
     end
   end
 
@@ -111,20 +112,12 @@ class Seq < Struct.new(:arr, :target)
 end
 
 def solve(target)
+  elapsed = Time.now - START_TIME
   best_score = 200000000
   best_seq = nil
 
-  base_seq = Seq.new(target)
-  250.times do
-    x = rand(N); y = rand(N); h = N
-    base_seq.add!(x, y, h)
-  end
-
   loop do
-    break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
-
-    seq = base_seq.dup
-    # seq.gen_rand2!(STEPS)
+    seq = Seq.new(target)
     seq.greedy(STEPS)
 
     if seq.score < best_score
@@ -132,9 +125,10 @@ def solve(target)
       best_seq = seq
     end
 
+    break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
     STDERR.puts "t:#{elapsed} best:#{best_score} score:#{seq.score}"
-    break
   end
+  STDERR.puts "t:#{elapsed} best:#{best_score}"
 
   best_seq
 end
