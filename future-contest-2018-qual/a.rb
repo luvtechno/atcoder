@@ -22,10 +22,23 @@ class F < Struct.new(:mat, :score)
   def sub(x, y, h)
     old_score = self.score
     penalty = 0
-    ([x-h+1, 0].max..[x+h-1, N-1].min).each do |i|
-      ([y-h+1, 0].max..[y+h-1, N-1].min).each do |j|
-        d = h - (x - i).abs - (y - j).abs
-        next if d <= 0
+    # ([x-h+1, 0].max..[x+h-1, N-1].min).each do |i|
+    #   ([y-h+1, 0].max..[y+h-1, N-1].min).each do |j|
+    #     d = h - (x - i).abs - (y - j).abs
+    #     next if d <= 0
+    #     old_value = self.mat[j][i]
+    #     new_value = old_value - d
+    #     self.mat[j][i] = new_value
+    #     score_diff = old_value.abs - new_value.abs
+    #     self.score -= score_diff
+    #     penalty += d if new_value < 0 && old_value >= 0
+    #   end
+    # end
+
+    ([y, 0].max..[y+h-1, N-1].min).each do |j|
+      dy = j - y
+      ([x, 0].max..[x+h-1-dy, N-1].min).each do |i|
+        d = h - (i - x) - dy
         old_value = self.mat[j][i]
         new_value = old_value - d
         self.mat[j][i] = new_value
@@ -34,6 +47,46 @@ class F < Struct.new(:mat, :score)
         penalty += d if new_value < 0 && old_value >= 0
       end
     end
+
+    ([y, 0].max..[y+h-1, N-1].min).each do |j|
+      dy = j - y
+      ([x-h+1+dy, 0].max..[x-1, N-1].min).each do |i|
+        d = h - (x - i) - dy
+        old_value = self.mat[j][i]
+        new_value = old_value - d
+        self.mat[j][i] = new_value
+        score_diff = old_value.abs - new_value.abs
+        self.score -= score_diff
+        penalty += d if new_value < 0 && old_value >= 0
+      end
+    end
+
+    ([y-h+1, 0].max..[y-1, N-1].min).each do |j|
+      dy = y - j
+      ([x, 0].max..[x+h-1-dy, N-1].min).each do |i|
+        d = h - (i - x) - dy
+        old_value = self.mat[j][i]
+        new_value = old_value - d
+        self.mat[j][i] = new_value
+        score_diff = old_value.abs - new_value.abs
+        self.score -= score_diff
+        penalty += d if new_value < 0 && old_value >= 0
+      end
+    end
+
+    ([y-h+1, 0].max..[y-1, N-1].min).each do |j|
+      dy = y - j
+      ([x-h+1+dy, 0].max..[x-1, N-1].min).each do |i|
+        d = h - (x - i) - dy
+        old_value = self.mat[j][i]
+        new_value = old_value - d
+        self.mat[j][i] = new_value
+        score_diff = old_value.abs - new_value.abs
+        self.score -= score_diff
+        penalty += d if new_value < 0 && old_value >= 0
+      end
+    end
+
     old_score - self.score - penalty * 3
   end
 
@@ -73,7 +126,6 @@ class Seq < Struct.new(:arr, :target)
   end
 
   def add!(x, y, h, score_target)
-    # raise if h <= 0 || h > N
     next_target = target.dup
     score_diff = next_target.sub(x, y, h)
     if score_diff >= score_target
