@@ -91,22 +91,26 @@ class Seq < Struct.new(:arr, :target)
 
     prev_score = score
     h_cap = N
-    steps.times do |i|
+    i = 0
+    loop do
       break if (elapsed = Time.now - START_TIME) > TIME_LIMIT
 
       h, x, y = target.max
+      h2 = [h, h_cap].min
       if h > 0
-        add!(x, y, [h, h_cap].min)
+        add!(x, y, h2)
       end
 
-      STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}"
+      STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}, h2:#{h2} h:#{h}, x:#{x}, y:#{y}"
       if prev_score == score
-        h_cap = (h_cap + 1) / 2
+        h_cap = (h2 + 1) / 2
         break if h_cap <= 0
       else
         h_cap = N
       end
       prev_score = score
+      i += 1
+      break if arr.size >= 1000
     end
   end
 
