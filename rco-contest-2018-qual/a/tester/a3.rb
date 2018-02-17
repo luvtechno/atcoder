@@ -3,7 +3,6 @@ start_time = Time.new
 time_limit = (ARGV[0] || 3.90).to_f
 GC.disable
 
-require 'set'
 class PQueue
   def initialize(elements=nil, &block)
     @que = []; @cmp = block || lambda{ |a,b| a <=> b }
@@ -167,33 +166,6 @@ class Field < Struct.new(:id, :rows, :x, :y, :alive, :score, :c_c, :c_w, :c_t)
     new_field.move!(ch)
     new_field
   end
-
-  CH = ['U', 'D', 'L', 'R'].freeze
-  def find_seq_to_coin
-    set = Set.new
-    q = Queue.new
-    q << [self.dup, '']
-
-    found_seq = ''
-    while(!q.empty?) do
-      field, seq = q.pop
-      if field.score > self.score
-        found_seq = seq
-        break
-      end
-
-      next unless field.alive
-
-      pos = [field.x, field.y]
-      next if set.include?(pos)
-      set << pos
-
-      CH.each do |ch|
-        q << [field.move(ch), seq + ch]
-      end
-    end
-    found_seq
-  end
 end
 
 class State < Struct.new(:len, :seq, :score, :fields)
@@ -201,34 +173,17 @@ class State < Struct.new(:len, :seq, :score, :fields)
   def next_states
     list = []
     CH.each do |ch|
-      list << gen_next_state(ch) #if ch != seq[-1]
+      CH.each do |ch2|
+        # CH.each do |ch3|
+          list << gen_next_state(ch, ch2)
+        # end
+      end
     end
+    # list << gen_next_state('U') if seq[-1] != 'D'
+    # list << gen_next_state('D') if seq[-1] != 'U'
+    # list << gen_next_state('L') if seq[-1] != 'R'
+    # list << gen_next_state('R') if seq[-1] != 'L'
     list
-
-    # scores = list.map(&:score)
-    # scores_max = scores.max
-    # return list if scores.max > self.score
-
-    # list2 = []
-    # seq_list = fields.map { |field| field.find_seq_to_coin.chars }
-    # seq_list.each do |seq|
-    #   list2 << gen_next_state(*seq)
-    # end
-    # scores2 = list2.map(&:score)
-    # scores2_max = scores.max
-    # STDERR.puts "find_seq_to_coin: #{scores_max} -> #{scores2_max}"
-    # if scores2_max > scores_max
-    #   list2.select { |state| state.score >= scores_max }
-    # else
-    #   list
-    # end
-
-    # list2 = []
-    # seq_list = fields.map { |field| field.find_seq_to_coin.chars }
-    # seq_list.each do |seq|
-    #   list2 << gen_next_state(*seq)
-    # end
-    # list2
   end
 
   def gen_next_state(*ch_list)
@@ -259,7 +214,7 @@ class State < Struct.new(:len, :seq, :score, :fields)
   end
 
   def value
-    score - len
+    score
   end
 
   def <=>(other)
@@ -270,9 +225,9 @@ end
 
 def choose_fields(fields)
   [
-    fields.sample(8),
     # fields.sample(8),
-    # fields[0..7],
+    # fields.sample(8),
+    fields[0..7],
     # fields.sort_by { |f| f.c_c * 2 - f.c_t }[0..7],
     # fields.sort_by { |f| - f.c_c }[0..7],
   ]
@@ -288,44 +243,41 @@ def solve(field_sets, start_time, time_limit)
 
   max_score = 0
   max_state = nil
+
+  queue_size_max = 30
+
+  len = 0
   elapsed = 0
-
-  queue_size_max = 1000
-
-  prev_max_score = 0
-  max_unchanged_count = 0
-  stop_count = 100
-  while(!q.empty?) do
-    state = q.pop
-    if state.score > max_score
-      max_score = state.score
-      max_state = state
-    end
-
-    if max_score == prev_max_score
-      max_unchanged_count += 1
-      if max_unchanged_count >= stop_count
-        break
-      end
-    else
-      max_unchanged_count = 0
-    end
-    prev_max_score = max_score
-
-    # STDERR.puts "q.size:#{q.size} seq:#{state.len} score:#{state.score} max:#{max_score} elapsed:#{elapsed} unchanged:#{max_unchanged_count}"
+  loop do
+    STDERR.puts "q:#{q.size} len:#{len} max:#{max_score} elapsed:#{elapsed}"
     break if (elapsed = Time.now - start_time) > time_limit
 
-    next if state.prune?
+    next_q = PQueue.new
+    while(!q.empty?) do
+      state = q.pop
+      if state.score > max_score
+        max_score = state.score
+        max_state = state
+      end
 
-    state.next_states.each do |next_state|
-      q << next_state
+      break if (elapsed = Time.now - start_time) > time_limit
+
+      next if state.prune?
+
+      state.next_states.each do |next_state|
+        next_q << next_state
+      end
+
+      if next_q.size > queue_size_max
+        (next_q.size - queue_size_max).times { next_q.shift }
+      end
     end
 
-    if q.size > queue_size_max
-      (q.size - queue_size_max).times { q.shift }
-    end
+    q = next_q
+
+    len += 1
+    break if len >= 2500
   end
-  STDERR.puts "q.size:#{q.size} max_seq:#{max_state.seq.size} max:#{max_score} elapsed:#{elapsed}"
 
   max_state
 end
@@ -357,17 +309,9 @@ n.times do |i|
 end
 
 
-max_score = 0
-max_state = nil
-loop do
-  break if (elapsed = Time.now - start_time) > time_limit
-  target_field_sets = choose_fields(fields)
-  state = solve(target_field_sets, start_time, time_limit)
-  if state.score > max_score
-    max_score = state.score
-    max_state = state
-  end
-end
 
-puts max_state.fields.map(&:id).join(' ')
-puts max_state.seq[0..2499]
+target_field_sets = choose_fields(fields)
+state = solve(target_field_sets, start_time, time_limit)
+
+puts state.fields.map(&:id).join(' ')
+puts state.seq[0..2499]
