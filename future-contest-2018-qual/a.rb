@@ -108,7 +108,7 @@ class Seq < Struct.new(:arr, :target)
         add!(x, y, h2, score_target / 2)
       end
 
-      STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}, h2:#{h2} h:#{h}, x:#{x}, y:#{y}"
+      # STDERR.puts "t:#{elapsed} i:#{i} score:#{score}, h_cap:#{h_cap}, h2:#{h2} h:#{h}, x:#{x}, y:#{y}"
       if prev_score == score
         h_cap = (h2 + 1) / 2
         break if h_cap <= 0
