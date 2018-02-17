@@ -1,6 +1,6 @@
 # require 'pp'
 START_TIME = Time.new
-TIME_LIMIT = (ARGV[0] || 5.5).to_f
+TIME_LIMIT = (ARGV[0] || 5.6).to_f
 STEPS = (ARGV[1] || 1000).to_i
 # GC.disable
 
@@ -80,7 +80,7 @@ def solve(target)
     STDERR.puts "t:#{elapsed} score:#{best_score}"
 
     seq = Seq.new([], 0, target)
-    seq.gen_rand2!(STEPS)
+    seq.gen_rand!(STEPS)
     seq.calc_score
 
     if seq.score > best_score
