@@ -1,4 +1,5 @@
 # require 'pp'
+# require 'rblineprof'
 START_TIME = Time.new
 TIME_LIMIT = (ARGV[0] || 5.90).to_f
 # GC.disable
@@ -154,7 +155,27 @@ target_mat = []
 N.times do
   target_mat << STDIN.gets.chomp.split(" ").map(&:to_i)
 end
-target = F.new(target_mat)
+target = F.new(target_mat, nil)
 
-seq = solve(target)
+seq = nil
+# profile = lineprof(/./) do
+  seq = solve(target)
+# end
+# file = profile.keys.first
+# File.readlines(file).each_with_index do |line, num|
+#   wall, cpu, calls, allocations = profile[file][num + 1]
+
+#   if wall > 0 || cpu > 0 || calls > 0
+#     printf(
+#       "% 5.1fms + % 6.1fms (% 4d) | %s",
+#       cpu / 1000.0,
+#       (wall - cpu) / 1000.0,
+#       calls,
+#       line
+#     )
+#   else
+#     printf "                          | %s", line
+#   end
+# end
+
 seq.print
