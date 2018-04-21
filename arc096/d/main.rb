@@ -28,7 +28,7 @@ c_r = costs(x_r, v_r)
 
 def max_e(x, v, c)
   answer = [0]
-
+  e_max = 0
   e = 0
   c.each_with_index do |c, i|
     e += c
@@ -40,8 +40,8 @@ def max_e(x, v, c)
 end
 
 
-e_f = max_e(x, v)
-e_r = max_e(x_r, v_r)
+e_f = max_e(x, v, c)
+e_r = max_e(x_r, v_r, c_r)
 
 
 def solve(x, c, e_f, e_r)
