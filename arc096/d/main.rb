@@ -37,36 +37,6 @@ def max_e(x, v, c)
   end
 
   answer
-
-  # costs2 = [costs[0]]
-  # x2 = [x[0]]
-  # (1..N-1).each do |i|
-  #   if (costs[i-1] > 0 && costs[i] > 0) || (costs[i-1] <= 0 && costs[i] <= 0)
-  #     costs2[-1] += costs[i]
-  #     x2[-1] += x[i]
-  #   else
-  #     costs2 << costs[i]
-  #     x2 << x[i]
-  #   end
-  # end
-
-  # ans_e = 0
-  # e = 0
-  # ans_d = 0
-  # costs2.each_with_index do |c, i|
-  #   e += c
-
-  #   if c > 0
-  #     ans_e += c
-  #     and_d = i
-  #   else
-  #     ans_e += c
-  #     and_d = i
-
-  #   end
-  # end
-
-  # [ans_e, x2[ans_d]]
 end
 
 
