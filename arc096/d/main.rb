@@ -22,15 +22,15 @@ def costs(x, v)
   costs
 end
 
-c = costs[x, v]
-c_r = costs[x_r, v_r]
+c = costs(x, v)
+c_r = costs(x_r, v_r)
 
 
 def max_e(x, v, c)
   answer = [0]
 
   e = 0
-  c.each_eith_index do |c, i|
+  c.each_with_index do |c, i|
     e += c
     e_max = [e_max, e].max
     answer << e_max
@@ -45,9 +45,19 @@ e_r = max_e(x_r, v_r)
 
 
 def solve(x, c, e_f, e_r)
-  max_e = 0
+  e_max = 0
 
+  e = 0
+  c.each_with_index do |c, i|
+    e += c
 
+    e_max = e if e_max < e
+
+    e_rev = e - x[i] + e_r[N - (i+1)]
+    e_max = e_rev if e_max < e_rev
+  end
+
+  e_max
 end
 
 
