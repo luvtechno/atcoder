@@ -23,6 +23,11 @@ while l < N2
   c_l = c[l]
   a_l = a[l]
 
+  if c_l == nil
+    l += 1
+    next
+  end
+
   if c_l == 'B' && b_next == a_l
     l += 1
     b_next += 1
@@ -34,38 +39,26 @@ while l < N2
     next
   end
 
-  target = l
+  move = 0
   r = l + 1
   while r < N2
+    move += 1 if c[r] != nil
     if c[r] == 'B' && b_next == a[r]
-      target = r
       b_next += 1
+      c[r] = nil
       break
     end
     if c[r] == 'W' && w_next == a[r]
-      target = r
       w_next += 1
+      c[r] = nil
       break
     end
     r += 1
   end
 
-  c_target = c[target]
-  a_target = a[target]
-
-  (l..target-1).reverse_each do |i|
-    c[i+1] = c[i]
-    a[i+1] = a[i]
-  end
-  c[l] = c_target
-  a[l] = a_target
-
-  move = target - l
   ans += move
 
-  # pp l, target, c, a
-
-  l += 1
+  # l += 1
 end
 
 puts ans
