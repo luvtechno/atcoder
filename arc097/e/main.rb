@@ -6,7 +6,7 @@ c = []
 a = []
 N2.times do |i|
   x, y = gets.chomp.split(" ")
-  c[i] = x
+  c[i] = x == "B"
   a[i] = y.to_i
 end
 
@@ -28,12 +28,12 @@ while l < N2
     next
   end
 
-  if c_l == 'B' && b_next == a_l
+  if c_l && b_next == a_l
     l += 1
     b_next += 1
     next
   end
-  if c_l == 'W' && w_next == a_l
+  if !c_l && w_next == a_l
     l += 1
     w_next += 1
     next
@@ -43,15 +43,17 @@ while l < N2
   r = l + 1
   while r < N2
     move += 1 if c[r] != nil
-    if c[r] == 'B' && b_next == a[r]
-      b_next += 1
-      c[r] = nil
-      break
-    end
-    if c[r] == 'W' && w_next == a[r]
-      w_next += 1
-      c[r] = nil
-      break
+    if c[r] != nil
+      if c[r] && b_next == a[r]
+        b_next += 1
+        c[r] = nil
+        break
+      end
+      if !c[r] && w_next == a[r]
+        w_next += 1
+        c[r] = nil
+        break
+      end
     end
     r += 1
   end
