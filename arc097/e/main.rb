@@ -10,41 +10,62 @@ N2.times do |i|
   a[i] = y.to_i
 end
 
-pp c, a
+# pp c, a
 
 ans = 0
 
 l = 0
+
+b_next = 1
+w_next = 1
+
 while l < N2
   c_l = c[l]
   a_l = a[l]
 
+  if c_l == 'B' && b_next == a_l
+    l += 1
+    b_next += 1
+    next
+  end
+  if c_l == 'W' && w_next == a_l
+    l += 1
+    w_next += 1
+    next
+  end
+
   target = l
   r = l + 1
   while r < N2
-    if c_l == c[r]
-      if a_l > a[r]
-        target = r
-      end
+    if c[r] == 'B' && b_next == a[r]
+      target = r
+      b_next += 1
+      break
+    end
+    if c[r] == 'W' && w_next == a[r]
+      target = r
+      w_next += 1
+      break
     end
     r += 1
   end
 
-  (l+1..target).each do |i|
-    c[i-1] = c[i]
-    a[i-1] = a[i]
+  c_target = c[target]
+  a_target = a[target]
+
+  (l..target-1).reverse_each do |i|
+    c[i+1] = c[i]
+    a[i+1] = a[i]
   end
-  c[target] = c_l
-  a[target] = a_l
+  c[l] = c_target
+  a[l] = a_target
 
   move = target - l
   ans += move
 
-  pp l, target, c, a
+  # pp l, target, c, a
 
-  if move == 0
-    l += 1
-  end
+  l += 1
 end
 
 puts ans
