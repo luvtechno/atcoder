@@ -13,8 +13,10 @@ while a < len
   while b < a + 5 && b < len
     str = s[a..b]
     if ans.include?(str)
+      # nop
     elsif ans.size < K
       ans << str
+      ans.sort!
     else
       if ans[-1] < str
         break
