@@ -1,5 +1,3 @@
-require 'set'
-require 'pp'
 N = gets.chomp.to_i
 N2 = N * 2
 c = []
