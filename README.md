@@ -5,5 +5,9 @@ AtCoder
 ## Preparation
 
 ```
-touch a.rb a1.txt b.rb b1.txt c.rb c1.txt d.rb d1.txt
+mkdir c d e f
+cd c; touch main.rb 1.txt 2.txt 3.txt; cd ..
+cd d; touch main.rb 1.txt 2.txt 3.txt; cd ..
+cd e; touch main.rb 1.txt 2.txt 3.txt; cd ..
+cd f; touch main.rb 1.txt 2.txt 3.txt; cd ..
 ```
