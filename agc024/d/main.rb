@@ -53,3 +53,13 @@ end
 
 # pp min
 # pp min_nodes.to_a
+
+min_color_count = N
+min_leaf_count = N
+
+min_nodes.each do |i|
+
+end
+
+
+puts min_color_count, min_leaf_count
