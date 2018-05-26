@@ -4,16 +4,16 @@ N = gets.chomp.to_i
 a = gets.chomp.split(" ").map(&:to_i)
 
 
-bits = Array.new(N) { Array.new(20, false) }
+bits = Array.new(N) { Array.new(21, 0) }
 N.times do |i|
   x = a[i]
   21.times do |j|
-    bits[i][j] = x % 2 == 1
+    bits[i][j] = x % 2
     x /= 2
   end
+  # pp [i, bits[i]]
 end
 
-pp bits
 
 ans = 0
 
@@ -21,44 +21,51 @@ l = r = 0
 ans_l = 0
 while l < N do
   cur = bits[l].dup
-  puts "l:#{l} r:#{r} ans_l:#{ans_l} ans:#{ans}"
+  # puts "l:#{l} r:#{r} ans_l:#{ans_l} ans:#{ans} cur:#{cur}"
   while r < N do
     if l == r
       ans_l += 1
     else
       flag = false
       21.times do |j|
-        if bits[r][j]
-          if cur[j]
-            flag = true
-          else
-            cur[j] = true
-          end
+        if bits[r][j] == 1 && cur[j] == 1
+          flag = true
         end
       end
+
       if flag
+        r -= 1
         break
       else
+        21.times do |j|
+          if bits[r][j] == 1
+            cur[j] = 1
+          end
+        end
         ans_l += 1
       end
     end
     r += 1
+    # puts "l:#{l} r:#{r} ans_l:#{ans_l} ans:#{ans} cur:#{cur}"
   end
 
-  puts "l:#{l} r:#{r} ans_l:#{ans_l} ans:#{ans}"
+  # puts "l:#{l} r:#{r} ans_l:#{ans_l} ans:#{ans} cur:#{cur}"
 
-  ans += ans_l
-  ans_l -= 1
+  r -= 1 if r >= N
+  ans += r - l + 1
+  # ans += ans_l
+  # ans_l -= 1
 
   21.times do |j|
-    if bits[l][j]
-      if cur[j]
-        cur[j] = false
-      end
+    if bits[l][j] == 1
+      cur[j] = 0
     end
   end
 
   l += 1
+  if r < l
+    r = l
+  end
 end
 
 
