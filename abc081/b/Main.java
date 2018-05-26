@@ -9,22 +9,17 @@ public class Main {
       a[i] = sc.nextInt();
     }
 
-    int ans = 0;
+    int ans = 60;
 
-    while(true) {
-      boolean fail = false;
-      for(int i = 0; i < n; i++) {
-        if(a[i] % 2 == 0) {
-          a[i] /= 2;
-        }
-        else {
-          fail = true;
-          break;
-        }
+    for(int i = 0; i < n; i++) {
+      int x = 0;
+      while(a[i] % 2 == 0) {
+        a[i] /= 2;
+        x++;
       }
-      if(fail) break;
-
-      ans++;
+      if(ans > x) {
+        ans = x;
+      }
     }
 
     System.out.println(ans);
